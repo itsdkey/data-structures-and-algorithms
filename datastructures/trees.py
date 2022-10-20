@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from collections import deque
+from typing import Optional
 
 
 class BinaryTreeNode:
@@ -174,3 +177,108 @@ class BinarySearchTreeNode(BinaryTreeNode):
         if self.left:
             return self.left.find_minimum()
         return self
+
+
+class AVLTreeNode:
+    """Class representing an AVL Tree.
+
+    Based on:
+    https://youtu.be/vRwi_UcZGjU
+    https://backtobackswe.com/platform/content/avl-trees-rotations/solutions
+    """
+
+    def __init__(self, value: int) -> None:
+        self.value: int = value
+        self.height: int = 0
+        self.left: Optional[AVLTreeNode] = None
+        self.right: Optional[AVLTreeNode] = None
+
+    def create_tree(self, items: list, threshold: int) -> None:
+        if not items:
+            return
+
+        root = items[0]
+        for index in range(1, len(items)):  # omit slicing so we don't iterate twice
+            self.insert(root, items[index], threshold)
+
+    def insert(self, node: AVLTreeNode, value: int, threshold: int) -> AVLTreeNode:
+        # return a child when we find a empty spot
+        # (refactor of BinarySearchTreeNode.insert else statements)
+        if not node:
+            return AVLTreeNode(value)
+
+        if value <= node.value:
+            node.left = node.left.insert(node.left, value, threshold)
+        else:
+            node.right = node.right.insert(node.right, value, threshold)
+
+        node.height = 1 + max(self.get_height(node.left), self.get_height(node.right))
+        balance = self.get_balance(node)
+
+        if balance > threshold:
+            # left heavy - positive balance
+            if self.get_balance(node.left) >= 0:
+                # left node is left heavy ->
+                # only rotate right
+                node = self.rotate_right(node)
+            else:
+                # left node is right heavy ->
+                # rotate left then right (left_right rotation)
+                node = self.rotate_left_right(node)
+        elif balance < -threshold:
+            # right heavy - negative balance
+            if self.get_balance(node.right) <= 0:
+                # right node is right heavy ->
+                # rotate left
+                node = self.rotate_left(node)
+            else:
+                # right node is left heavy ->
+                # rotate right then left (right_left rotation)
+                node = self.rotate_right_left(node)
+        return node
+
+    @staticmethod
+    def get_height(node: AVLTreeNode) -> int:
+        """Return height of a subtree if it exists."""
+        if not node:
+            return 0
+        return node.height
+
+    def get_balance(self, node: AVLTreeNode):
+        """Return the balance of a node's subtrees.
+
+        positives - left heavy (left side is taller than right)
+        0 - full balanced
+        negatives - right heavy (right side is taller than left)
+        """
+        return self.get_height(node.left) - self.get_height(node.right)
+
+    def rotate_right(self, node: AVLTreeNode) -> AVLTreeNode:
+        """Rotate right and return root of the subtree."""
+        child = node.left
+        node.left = child.right
+        child.right = node
+
+        node.height = 1 + max(self.get_height(node.left), self.get_height(node.right))
+        child.height = 1 + max(self.get_height(child.left), node.height)
+        return child
+
+    def rotate_left(self, node: AVLTreeNode) -> AVLTreeNode:
+        """Rotate left and return root of the subtree."""
+        child = node.right
+        node.right = child.left
+        child.left = node
+
+        node.height = 1 + max(self.get_height(node.left), self.get_height(node.right))
+        child.height = 1 + max(self.get_height(child.left), node.height)
+        return child
+
+    def rotate_left_right(self, node: AVLTreeNode) -> AVLTreeNode:
+        """Rotate left then right."""
+        node.left = self.rotate_left(node.left)
+        return self.rotate_right(node)
+
+    def rotate_right_left(self, node: AVLTreeNode) -> AVLTreeNode:
+        """Rotate right then left."""
+        node.right = self.rotate_right(node.right)
+        return self.rotate_left(node)
