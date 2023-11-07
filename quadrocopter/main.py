@@ -1,4 +1,4 @@
-from quadrocopter.quadrocopter import Quadrocopter
+from quadrocopter import Quadrocopter
 
 
 def get_antennas() -> list[tuple]:
