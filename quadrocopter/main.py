@@ -6,7 +6,7 @@ def get_antennas() -> list[tuple]:
 
     An antenna has information: (x, y, radius/power).
     """
-    number = int(input("podaj liczbę anten: "))
+    number = int()
     results = []
     for i in range(number):
         results.append(tuple(int(x) for x in input().split(" ")))
