@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 ENV PATH="/training/scripts:${PATH}"
 
@@ -9,25 +9,24 @@ COPY requirements.txt /training/
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-        curl \
+        binutils \
         gcc \
-        g++ \
-        libicu-dev \
-        pkg-config \
+        libpq-dev \
         python3-dev \
-        python3-icu \
     ; \
     useradd -c "App User" \
-        --home-dir /app \
+        --home-dir /training \
         --shell /bin/sh \
         --create-home \
         --uid 1000 \
         app \
     ; \
-    pip install --upgrade pip; \
-    pip install --upgrade setuptools; \
-    pip install -r requirements.txt; \
-    chown -R app:app /training
+    pip install --no-cache-dir --upgrade pip; \
+    pip install --no-cache-dir --upgrade setuptools; \
+    pip install --no-cache-dir -r requirements.txt; \
+    chown -R app:app /training; \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    rm -rf /var/lib/apt/lists/*
 
 COPY . /training/
 
