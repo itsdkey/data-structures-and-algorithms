@@ -6,7 +6,8 @@ Record = dict[str, int | FieldWithTTL]
 
 
 class Database:
-    database: dict[str, Record] = defaultdict(Record)
+    def __init__(self) -> None:
+        self.database: dict[str, Record] = defaultdict(Record)
 
     def set(
         self, timestamp: str, key: str, field: str, value: str | FieldWithTTL
@@ -24,7 +25,8 @@ class Database:
         expected_value: str,
         new_value: str | FieldWithTTL,
     ) -> str:
-        value = self.get(timestamp, key, field)
+        if value := self.get(timestamp, key, field):
+            value = int(value)
         if value == int(expected_value):
             self.set(timestamp, key, field, new_value)
             return "true"
@@ -57,7 +59,8 @@ class Database:
     def compare_and_delete(
         self, timestamp: str, key: str, field: str, expected_value: str
     ) -> str:
-        value = self.get(timestamp, key, field)
+        if value := self.get(timestamp, key, field):
+            value = int(value)
         if value == int(expected_value):
             self.database[key].pop(field)
             return "true"
@@ -69,8 +72,8 @@ class Database:
             value, ttl = value["value"], value["ttl"]
             if ttl <= int(timestamp):
                 self.database[key].pop(field)
-                value = ""
-        return value
+                return ""
+        return str(value)
 
     def scan(self, timestamp: str, key: str) -> str:
         result = ""
@@ -98,15 +101,3 @@ class Database:
             else:
                 values.append(f"{field}({field_value})")
         return ", ".join(values)
-
-
-def solution(queries: list[list[str]]) -> list:
-    output = []
-    database = Database()
-    for query in queries:
-        operation, *args = query
-        if method := getattr(database, operation.lower(), None):
-            output.append(method(*args))
-        else:
-            raise ValueError(f"Operation {operation} does not exist")
-    return output
