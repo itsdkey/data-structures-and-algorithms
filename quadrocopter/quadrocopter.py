@@ -45,7 +45,7 @@ class Quadrocopter:
         return results[result]
 
     def _calculate(self, point: Point) -> bool:
-        self._print(f"visiting: ({point.x, point.y}), neighbors: {point.neighbors}")
+        self._print(f"visiting: {point.x, point.y}, neighbors: {point.neighbors}")
         point.visited = True
         line_length = self._get_line_length(self.end, point)
         self._print(f"{line_length=}")
