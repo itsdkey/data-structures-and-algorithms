@@ -1,21 +1,23 @@
-from quadrocopter import Quadrocopter
+from .dataclasses import Point
+from .quadrocopter import Quadrocopter
 
 
-def get_antennas() -> list[tuple]:
+def get_antennas() -> list[Point]:
     """Collect antennas.
 
     An antenna has information: (x, y, radius/power).
     """
-    number = int()
+    number = int(input())
     results = []
     for i in range(number):
-        results.append(tuple(int(x) for x in input().split(" ")))
+        x, y, radius = tuple(int(x) for x in input().split(" "))
+        results.append(Point(x, y, radius))
     return results
 
 
-def get_start_end() -> tuple[tuple[int], tuple[int]]:
-    start_point = tuple(int(x) for x in input().split(" "))
-    end_point = tuple(int(x) for x in input().split(" "))
+def get_start_end() -> tuple[Point, Point]:
+    start_point = Point(*tuple(int(x) for x in input().split(" ")))
+    end_point = Point(*tuple(int(x) for x in input().split(" ")))
     return start_point, end_point
 
 
