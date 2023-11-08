@@ -50,7 +50,7 @@ class Quadrocopter:
         line_length = self._get_line_length(self.end, point)
         self._print(f"{line_length=}")
         if line_length <= point.radius:
-            self._print("Found end point.")
+            self._print("found end point.")
             return True
 
         found_path = False
