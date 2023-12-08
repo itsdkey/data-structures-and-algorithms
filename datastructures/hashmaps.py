@@ -68,10 +68,11 @@ class AdvancedHashTable:
 class RealHashTable:
     """A custom class implementing simple logic of a hashtable.
 
-    It stores triplets [hash, key, value] under a certain index (the hash value).
+    It stores triplets [hash, key, value] under a certain index (the hash
+    value).
 
-    This is a basic implementation of Python dict till 3.6.
-    It doesn't handle collisions.
+    This is a basic implementation of Python dict till 3.6. It doesn't handle
+    collisions.
     """
 
     def __init__(self, size: int = 8) -> None:
@@ -177,6 +178,7 @@ class HashTableWithChaining:
             if element[1] == key:
                 self.items[hashed_key][index] = triplet
                 update = True
+                break
         if not update:
             self.items[hashed_key].append(triplet)
 

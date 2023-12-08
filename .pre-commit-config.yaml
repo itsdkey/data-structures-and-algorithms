@@ -45,11 +45,12 @@ repos:
 
   # automatically upgrade syntax for newer versions of the language
   - repo: 'https://github.com/asottile/pyupgrade'
-    rev: v3.4.0
+    rev: v3.15.0
     hooks:
       - id: pyupgrade
         args:
           - '--keep-runtime-typing'
+          - '--py312-plus'
 
   # automatically correct docstrings
   - repo: 'https://github.com/myint/docformatter'

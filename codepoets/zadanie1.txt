@@ -1,0 +1,12 @@
+animals = {
+	"zwierzęta": [
+		{
+			"nazwa": "alpaka",
+			"waga": [48, 90]
+		},
+		{
+			"nazwa": "koń",
+            "waga": [700, 1000],
+        }
+    ]
+}
